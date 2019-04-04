@@ -1,0 +1,96 @@
+<body>
+
+<script>
+/*
+A map support do permutation calculation
+
+*/
+
+
+function Node(value){
+	
+	this.connectedNode = new Array();
+	
+	this.value = value;
+	
+	this.connectWith = function(anotherNode){
+		this.connectedNode.push(anotherNode);
+	}
+
+}
+
+function Map(){
+	this.buffer = new Array();
+	
+	this.permutationResultSet;
+	
+	this.add = function(node){
+		for(var n in this.buffer){
+			this.buffer[n].connectWith(node);
+			node.connectWith(this.buffer[n]);
+		}
+		this.buffer.push(node);	
+	}
+	
+	this.calculatePermutation = function(amount,ids){
+		if(amount == 0){
+			var item = new Array;
+			for(var i in ids){
+				item.push(this.buffer[ids[i]]);
+			}
+			this.permutationResultSet.push(item);
+			return;
+		}
+		for(var i = 0 ;i < this.buffer.length;i++){
+			var isContained = false;
+			for(var id in ids){
+				isContained |= (i == ids[id]);
+			}
+			if(!isContained){
+				ids.push(i);
+			}else{
+				continue;
+			}
+			this.calculatePermutation(amount-1,ids);
+			ids.pop();
+		}
+	
+	/* hard-code implementation 
+	
+		for(var i = 0 ;i < this.buffer.length; ++i){
+			for(var ii = 0;ii < this.buffer.length; ii++){
+				if(ii != i){
+					for(var iii = 0;iii < this.buffer.length;++iii){
+						if(iii != ii && iii!= i){
+							this.PermutationResultSet.push([this.buffer[i],this.buffer[ii],this.buffer[iii]]);
+						}
+					}
+				}
+			}
+		}
+	*/	
+			
+	}
+	
+	this.getPermutation = function(amount){
+		this.permutationResultSet = new Array();
+		this.calculatePermutation(amount,new Array());
+		return this.permutationResultSet;
+	}
+}
+
+/*
+	demo
+*/
+var map = new Map();
+map.add(new Node("A"));
+map.add(new Node("B"));
+map.add(new Node("C"));
+map.add(new Node("D"));
+map.add(new Node("E"));
+map.add(new Node("F"));
+console.log(map);
+console.log(map.getPermutation(3));
+
+</script>
+</body>
